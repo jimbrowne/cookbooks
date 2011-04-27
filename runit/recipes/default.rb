@@ -18,12 +18,14 @@
 #
 
 case node[:platform]
-when "debian","ubuntu", "gentoo"
+when "debian","ubuntu", "gentoo","centos","redhat"
   execute "start-runsvdir" do
     command value_for_platform(
       "debian" => { "default" => "runsvdir-start" },
       "ubuntu" => { "default" => "start runsvdir" },
-      "gentoo" => { "default" => "/etc/init.d/runit-start start" }
+      "gentoo" => { "default" => "/etc/init.d/runit-start start" },
+      "centos" => { "default" => "true" },
+      "redhat" => { "default" => "true" }
     )
     action :nothing
   end
@@ -53,7 +55,9 @@ when "debian","ubuntu", "gentoo"
         "9.04" => :run,
         "8.10" => :run,
         "8.04" => :run },
-      "gentoo" => { "default" => :run }
+      "gentoo" => { "default" => :run },
+      "centos" => { "default" => :nothing },
+      "redhat" => { "default" => :nothing }
     ), resources(:execute => "start-runsvdir"), :immediately
     notifies value_for_platform(
       "debian" => { "squeeze/sid" => :run, "default" => :nothing },
